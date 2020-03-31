@@ -21,11 +21,13 @@ namespace CtrlHForFilenames
         private void WithoutPathRB_CheckedChanged(object sender, EventArgs e)
         {
             PathTB.Enabled = WithPathRB.Checked;
+            SelectDirectoryBtn.Enabled = WithPathRB.Checked;
         }
 
         private void WithPathRB_CheckedChanged(object sender, EventArgs e)
         {
             PathTB.Enabled = WithPathRB.Checked;
+            SelectDirectoryBtn.Enabled = WithPathRB.Checked;
         }
 
         private void ReplaceBtn_Click(object sender, EventArgs e)
@@ -54,6 +56,19 @@ namespace CtrlHForFilenames
                 string message = "Nieprawidłowa ścieżka";
                 string caption = "Błąd";
                 MessageBox.Show(message, caption);
+            }
+        }
+
+        private void SelectDirectoryBtn_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    PathTB.Text = fbd.SelectedPath;
+                }
             }
         }
     }
