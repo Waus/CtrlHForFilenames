@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CtrlHForFilenames
@@ -36,26 +29,35 @@ namespace CtrlHForFilenames
             SearchOption searchOption = AllDirectoriesTB.Checked ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             string searchText = SearchTextTB.Text;
             string replaceTo = ReplaceToTB.Text;
-            if (Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
-                foreach (string filePath in Directory.GetFiles(path, "*", searchOption))
+                MessageBox.Show("Nieprawidłowa ścieżka", "Błąd");
+            }
+            else if (String.IsNullOrEmpty(searchText))
+            {
+                MessageBox.Show("Nie podano szukanego tekstu", "Błąd");
+            }
+            else
+            {
+                var allFiles = Directory.GetFiles(path, "*", searchOption);
+                foreach (string filePath in allFiles)
                 {
                     string directoryName = Path.GetDirectoryName(filePath);
                     string oldFileName = Path.GetFileName(filePath);
                     string newFileName = oldFileName.Replace(searchText, replaceTo);
-                    string newFileNameWithPath = directoryName + '\\' + newFileName;
 
                     if (!String.IsNullOrEmpty(newFileName) && newFileName != oldFileName)
                     {
-                        File.Move(filePath, newFileNameWithPath);
+                        string newFileNameWithPath = Path.Combine(directoryName, newFileName);
+                        try
+                        {
+                            File.Move(filePath, newFileNameWithPath);
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
-            }
-            else
-            {
-                string message = "Nieprawidłowa ścieżka";
-                string caption = "Błąd";
-                MessageBox.Show(message, caption);
             }
         }
 
